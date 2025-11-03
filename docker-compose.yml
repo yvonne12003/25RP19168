@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  25RP19168_web:
+    image: php:8.1-apache
+    container_name: 25RP19168_web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - 25RP19168_db
+    environment:
+      - DB_HOST=25RP19168_db
+      - DB_NAME=my25RP19168_shareride_db
+      - DB_USER=root
+      - DB_PASS=password
+
+  25RP19168_db:
+    image: mysql:8.0
+    container_name: 25RP19168_db
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: my25RP19168_shareride_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  25RP19168_phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: 25RP19168_phpmyadmin
+    environment:
+      PMA_HOST: 25RP19168_db
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - "8081:80"
+    depends_on:
+      - 25RP19168_db
+
+volumes:
+  db_data:
