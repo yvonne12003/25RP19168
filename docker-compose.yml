@@ -1,42 +1,37 @@
 version: '3.8'
 
 services:
-  25RP19168_web:
-    image: php:8.1-apache
-    container_name: 25RP19168_web
+  25RP19168-web:
+    build: .
     ports:
       - "8080:80"
+    depends_on:
+      - 25RP19168-db
     volumes:
       - ./src:/var/www/html
-    depends_on:
-      - 25RP19168_db
-    environment:
-      - DB_HOST=25RP19168_db
-      - DB_NAME=my25RP19168_shareride_db
-      - DB_USER=root
-      - DB_PASS=password
 
-  25RP19168_db:
+  25RP19168-db:
     image: mysql:8.0
-    container_name: 25RP19168_db
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: my25RP19168_shareride_db
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: 25RP19168_shareride_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpassword
     ports:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+      - ./database.sql:/docker-entrypoint-initdb.d/database.sql
 
-  25RP19168_phpmyadmin:
+  25rRP19168-phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: 25RP19168_phpmyadmin
     environment:
-      PMA_HOST: 25RP19168_db
-      MYSQL_ROOT_PASSWORD: password
+      PMA_HOST: 25RP19168-db
+      MYSQL_ROOT_PASSWORD: rootpassword
     ports:
       - "8081:80"
     depends_on:
-      - 25RP19168_db
+      - 25RP19168I-db
 
 volumes:
   db_data:
